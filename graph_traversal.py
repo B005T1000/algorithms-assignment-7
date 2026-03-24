@@ -31,14 +31,41 @@ def bfs(graph, start, target):
         graph = {0: [1, 2], 1: [0, 3], 2: [0], 3: [1]}
         bfs(graph, 0, 3) returns [0, 1, 3]
     """
-    # TODO: Implement BFS
-    # Hints:
-    # - Use a queue (deque) to track nodes to visit
-    # - Track visited nodes to avoid cycles
-    # - Track parent pointers to reconstruct path
-    # - Return path from start to target as a list
+    # Handle case where start is the target
+    if start == target:
+        return [start]
     
-    pass
+    # Initialize queue and visited set
+    queue = deque([start])
+    visited = {start}
+    
+    # Track parent pointers for path reconstruction
+    parent = {start: None}
+    
+    # BFS traversal
+    while queue:
+        current = queue.popleft()
+        
+        # Check all neighbors
+        for neighbor in graph.get(current, []):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                parent[neighbor] = current
+                
+                # Found the target!
+                if neighbor == target:
+                    # Reconstruct path
+                    path = []
+                    node = target
+                    while node is not None:
+                        path.append(node)
+                        node = parent[node]
+                    return path[::-1]  # Reverse to get start -> target
+                
+                queue.append(neighbor)
+    
+    # No path found
+    return []
 
 
 # ============================================================================
@@ -60,13 +87,23 @@ def dfs(graph, start):
         graph = {0: [1, 2], 1: [0, 3], 2: [0], 3: [1], 4: [5], 5: [4]}
         dfs(graph, 0) returns {0, 1, 2, 3}
     """
-    # TODO: Implement DFS
-    # Hints:
-    # - Use recursion or a stack to explore deeply
-    # - Track visited nodes to avoid infinite loops
-    # - Return a set of all reachable user IDs
+    visited = set()
     
-    pass
+    def dfs_recursive(node):
+        # Skip if already visited
+        if node in visited:
+            return
+        
+        # Mark node as visited
+        visited.add(node)
+        
+        # Explore all neighbors recursively
+        for neighbor in graph.get(node, []):
+            dfs_recursive(neighbor)
+    
+    # Start the recursive exploration
+    dfs_recursive(start)
+    return visited
 
 
 # ============================================================================
